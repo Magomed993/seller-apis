@@ -12,7 +12,28 @@ logger = logging.getLogger(__file__)
 
 
 def get_product_list(last_id, client_id, seller_token):
-    """Получить список товаров магазина озон"""
+    """Получить список товаров магазина озон.
+
+       Аргументы:
+            last_id: последний идентификатор, входит в параметр payload
+            client_id: идентификатор клиента
+            seller_token: токен продавца
+       Возврат:
+            json: словарь с результатом
+       Пример корректного исполнения функции:
+            >>last_id = (id)
+            >>client_id = (id клиента)
+            >>seller_token = (токен продавца)
+            >> get_product_list(last_id, client_id, seller_token)
+            {
+                словарь: значение
+            }
+       Пример некорректного исполнения функции:
+            >>client_id = (id клиента)
+            >>get_product_list(last_id, client_id, seller_token)
+            Error
+
+    """
     url = "https://api-seller.ozon.ru/v2/product/list"
     headers = {
         "Client-Id": client_id,
@@ -32,7 +53,24 @@ def get_product_list(last_id, client_id, seller_token):
 
 
 def get_offer_ids(client_id, seller_token):
-    """Получить артикулы товаров магазина озон"""
+    """Получить артикулы товаров магазина озон.
+
+       Аргументы:
+            client_id: идентификатор клиента
+            seller_token: токен продавца
+       Возврат:
+            list: список с артикулами
+       Пример корректного исполнения функции:
+            >>client_id = (id клиента)
+            >>seller_token = (токен продавца)
+            >>get_offer_ids(client_id, seller_token)
+            [список id]
+       Пример некорректного исполнения функции:
+            >>client_id = (id клиента)
+            >>get_offer_ids(client_id, seller_token)
+            Error
+
+    """
     last_id = ""
     product_list = []
     while True:
@@ -49,7 +87,28 @@ def get_offer_ids(client_id, seller_token):
 
 
 def update_price(prices: list, client_id, seller_token):
-    """Обновить цены товаров"""
+    """Обновить цены товаров.
+
+       Аргументы:
+            prices (list): список цен
+            client_id: идентификатор клиента
+            seller_token: токен продавца
+       Возврат:
+            {
+                джинсы: новая цена,
+            }
+       Пример корректного исполнения функции:
+            >>prices = [list]
+            >>client_id = (id клиента)
+            >>seller_token = (токен продавца)
+            >>update_price(prices, client_id, seller_token)
+            {джинсы: новая цена,}
+       Пример некорректного исполнения функции:
+            >>client_id = (id клиента)
+            >>update_price(prices, client_id, seller_token)
+            Error
+
+    """
     url = "https://api-seller.ozon.ru/v1/product/import/prices"
     headers = {
         "Client-Id": client_id,
@@ -62,7 +121,28 @@ def update_price(prices: list, client_id, seller_token):
 
 
 def update_stocks(stocks: list, client_id, seller_token):
-    """Обновить остатки"""
+    """Обновить остатки.
+
+       Аргументы:
+            stocks (list): список остатков
+            client_id: идентификатор клиента
+            seller_token: токен продавца
+       Возврат:
+            {
+                джинсы: новый остаток,
+            }
+       Пример корректного исполнения функции:
+            >>stocks = [list]
+            >>client_id = (id клиента)
+            >>seller_token = (токен продавца)
+            >>update_stocks(stocks, client_id, seller_token)
+            {джинсы: новый остаток,}
+       Пример некорректного исполнения функции:
+            >>stocks = [list]
+            >>client_id = (id клиента)
+            >>update_stocks(stocks, client_id, seller_token)
+            Error
+    """
     url = "https://api-seller.ozon.ru/v1/product/import/stocks"
     headers = {
         "Client-Id": client_id,
@@ -75,7 +155,29 @@ def update_stocks(stocks: list, client_id, seller_token):
 
 
 def download_stock():
-    """Скачать файл ostatki с сайта casio"""
+    """Скачать файл ostatki с сайта casio.
+
+       Аргументы:
+            нет
+       Возврат: list(dict):
+            [{
+                код: значение,
+                наименование товара: значение,
+                изображение: значение,
+                цена: значение,
+                количество: значение
+            }]
+       Пример корректного исполнения функции:
+            >>download_stock()
+            [{код: значение,
+            наименование товара: значение,
+            изображение: значение,
+            цена: значение,
+            количество: значение}]
+       Пример некорректного исполнения функции:
+            >>download_stock(1, 2)
+            Error
+    """
     # Скачать остатки с сайта
     casio_url = "https://timeworld.ru/upload/files/ostatki.zip"
     session = requests.Session()
@@ -96,6 +198,24 @@ def download_stock():
 
 
 def create_stocks(watch_remnants, offer_ids):
+    """Создать остатки.
+
+       Аргументы:
+            watch_remnants: остатки (часы) созданные функцией download_stock()
+            offer_ids: артикли из полученных товаров
+       Возврат: list(dict): создает список с вложенным словарем,
+       в котором указан код и его остаток
+       Пример корректного исполнения функции:
+            >>watch_remnants = download_stock()
+            >>offer_ids = get_offer_ids(...)
+            >>create_stocks(watch_remnants, offer_ids)
+            [{offer_id: код, stock: остаток}]
+       Пример некорректного исполнения функции:
+            >>watch_remnants = download_stock(1, 2)
+            >>offer_ids = get_offer_ids(...)
+            >>create_stocks(watch_remnants, offer_ids)
+            Error
+    """
     # Уберем то, что не загружено в seller
     stocks = []
     for watch in watch_remnants:
@@ -116,6 +236,29 @@ def create_stocks(watch_remnants, offer_ids):
 
 
 def create_prices(watch_remnants, offer_ids):
+    """Создать цены.
+
+       Аргументы:
+            watch_remnants: остатки (часы) созданные функцией download_stock()
+            offer_ids: артикли из полученных товаров
+       Возврат: list(dict): создает список с вложенным словарем,
+       в котором указаны значения по схожести offer_ids и кодом - подробное описание.
+       Пример корректного исполнения функции:
+            >>watch_remnants = download_stock()
+            >>offer_ids = get_offer_ids(...)
+            >>create_prices(watch_remnants, offer_ids)
+            [{  "auto_action_enabled": "UNKNOWN",
+                "currency_code": "RUB",
+                "offer_id": Код,
+                "old_price": "0",
+                "price": Цена
+            },]
+       Пример некорректного исполнения функции:
+            >>watch_remnants = download_stock(1, 2)
+            >>offer_ids = get_offer_ids(...)
+            >>create_prices(watch_remnants, offer_ids)
+            Error
+    """
     prices = []
     for watch in watch_remnants:
         if str(watch.get("Код")) in offer_ids:
@@ -131,17 +274,77 @@ def create_prices(watch_remnants, offer_ids):
 
 
 def price_conversion(price: str) -> str:
-    """Преобразовать цену. Пример: 5'990.00 руб. -> 5990"""
+    """Преобразовать цену.
+
+       Аргументы:
+            price (str): цена
+       Возврат:
+            str: цена заменённая на конкретно цифры
+       Пример корректного исполнения функции:
+            >>price = 5'990.00 руб.
+            >> price_conversion(price)
+            5990
+       Пример некорректного исполнения функции:
+            >>price = 5'990.00 руб.
+            >>price_conversion(price)
+            5'990.00 руб.
+
+    """
     return re.sub("[^0-9]", "", price.split(".")[0])
 
 
 def divide(lst: list, n: int):
-    """Разделить список lst на части по n элементов"""
+    """Разделить список lst на части по n элементов.
+
+           Аргументы:
+            lst (list): список
+            n (int): на сколько частей делить список
+       Возврат:
+            lst: небольшие списки разделенные на n частей.
+       Пример корректного исполнения функции:
+            >>lst = [1, 2, 3, 4, 5, 6]
+            >> n = 3
+            >>divide(lst, n)
+            [1, 2, 3]
+            [4, 5, 6]
+       Пример некорректного исполнения функции:
+            >>lst = []
+            >> n = 3
+            >>divide(lst, n)
+            [] - пустой список
+
+    """
     for i in range(0, len(lst), n):
         yield lst[i : i + n]
 
 
 async def upload_prices(watch_remnants, client_id, seller_token):
+    """Загрузить цены.
+
+       Аргументы:
+            watch_remnants: остатки (часы) созданные функцией download_stock()
+            client_id: идентификатор клиента
+            seller_token: токен продавца
+       Возврат: list(dict): создает список с вложенным словарем,
+       в котором указаны значения по схожести offer_ids и кодом - подробное описание.
+       Пример корректного исполнения функции:
+            >>watch_remnants = download_stock()
+            >>client_id = (id клиента)
+            >>seller_token = (токен продавца)
+            >>upload_prices(watch_remnants, client_id, seller_token)
+            [{  "auto_action_enabled": "UNKNOWN",
+                "currency_code": "RUB",
+                "offer_id": Код,
+                "old_price": "0",
+                "price": Цена
+            },]
+       Пример некорректного исполнения функции:
+            >>watch_remnants = download_stock()
+            >>client_id = (id клиента)
+            >>upload_prices(watch_remnants, seller_token)
+            Error
+
+    """
     offer_ids = get_offer_ids(client_id, seller_token)
     prices = create_prices(watch_remnants, offer_ids)
     for some_price in list(divide(prices, 1000)):
@@ -150,6 +353,29 @@ async def upload_prices(watch_remnants, client_id, seller_token):
 
 
 async def upload_stocks(watch_remnants, client_id, seller_token):
+    """Загрузить цены.
+
+       Аргументы:
+            watch_remnants: остатки (часы) созданные функцией download_stock()
+            client_id: идентификатор клиента
+            seller_token: токен продавца
+       Возврат 2-ух результатов:
+            not_empty - список запасов с ненулевым значением
+            stocks - список с остатками зависящие от их количества
+       Пример корректного исполнения функции:
+            >>watch_remnants = download_stock()
+            >>client_id = (id клиента)
+            >>seller_token = (токен продавца)
+            >>upload_stocks(watch_remnants, client_id, seller_token)
+            [список не равный нулю]
+            [список с остатками]
+       Пример некорректного исполнения функции:
+            >>watch_remnants = download_stock()
+            >>client_id = (id клиента)
+            >>upload_stocks(watch_remnants, seller_token)
+            Error
+
+    """
     offer_ids = get_offer_ids(client_id, seller_token)
     stocks = create_stocks(watch_remnants, offer_ids)
     for some_stock in list(divide(stocks, 100)):
