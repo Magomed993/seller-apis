@@ -5,6 +5,7 @@ python3 seller.py
 ```
 Обновление цен в ozon.ru
 
+Запуск скрипта:
 ```
 python3 market.py
 ```

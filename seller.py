@@ -21,10 +21,10 @@ def get_product_list(last_id, client_id, seller_token):
        Возврат:
             json: словарь с результатом
        Пример корректного исполнения функции:
-            >>last_id = (id)
+            >>last_id = (последний id)
             >>client_id = (id клиента)
             >>seller_token = (токен продавца)
-            >> get_product_list(last_id, client_id, seller_token)
+            >>get_product_list(last_id, client_id, seller_token)
             {
                 словарь: значение
             }
@@ -99,8 +99,8 @@ def update_price(prices: list, client_id, seller_token):
             }
        Пример корректного исполнения функции:
             >>prices = [list]
-            >>client_id = (id клиента)
-            >>seller_token = (токен продавца)
+            >>client_id = id клиента
+            >>seller_token = токен продавца
             >>update_price(prices, client_id, seller_token)
             {джинсы: новая цена,}
        Пример некорректного исполнения функции:
@@ -242,7 +242,7 @@ def create_prices(watch_remnants, offer_ids):
             watch_remnants: остатки (часы) созданные функцией download_stock()
             offer_ids: артикли из полученных товаров
        Возврат: list(dict): создает список с вложенным словарем,
-       в котором указаны значения по схожести offer_ids и кодом - подробное описание.
+       в котором указаны значения цены определенного кода (его номера).
        Пример корректного исполнения функции:
             >>watch_remnants = download_stock()
             >>offer_ids = get_offer_ids(...)
@@ -353,7 +353,7 @@ async def upload_prices(watch_remnants, client_id, seller_token):
 
 
 async def upload_stocks(watch_remnants, client_id, seller_token):
-    """Загрузить цены.
+    """Загрузить остатки.
 
        Аргументы:
             watch_remnants: остатки (часы) созданные функцией download_stock()
