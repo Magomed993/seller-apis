@@ -15,11 +15,11 @@ def get_product_list(last_id, client_id, seller_token):
     """Получить список товаров магазина озон.
 
        Аргументы:
-            last_id: последний идентификатор, входит в параметр payload
-            client_id: идентификатор клиента
-            seller_token: токен продавца
+            last_id (str): последний идентификатор, входит в параметр payload
+            client_id (str): идентификатор клиента
+            seller_token (str): токен продавца
        Возврат:
-            возвращает значение по ключу result из полученного JSON-объекта
+            list: список товаров по ключу "result" из JSON-ответа.
 
     """
     url = "https://api-seller.ozon.ru/v2/product/list"
@@ -44,8 +44,8 @@ def get_offer_ids(client_id, seller_token):
     """Получить артикулы товаров магазина озон.
 
        Аргументы:
-            client_id: идентификатор клиента
-            seller_token: токен продавца
+            client_id (str): идентификатор клиента
+            seller_token (str): токен продавца
        Возврат:
             list: список с артикулами
 
@@ -70,10 +70,10 @@ def update_price(prices: list, client_id, seller_token):
 
        Аргументы:
             prices (list): список цен
-            client_id: идентификатор клиента
-            seller_token: токен продавца
+            client_id (str): идентификатор клиента
+            seller_token (str): токен продавца
        Возврат:
-            возвращает ответ с сервера в формате JSON с обновленными ценами
+            list: возвращает ответ с сервера в формате JSON с обновленными ценами
 
     """
     url = "https://api-seller.ozon.ru/v1/product/import/prices"
@@ -92,10 +92,10 @@ def update_stocks(stocks: list, client_id, seller_token):
 
        Аргументы:
             stocks (list): список остатков
-            client_id: идентификатор клиента
-            seller_token: токен продавца
+            client_id (str): идентификатор клиента
+            seller_token (str): токен продавца
        Возврат:
-            возвращает ответ с сервера в формате JSON с обновленными остатками
+            list: возвращает список обновленных остатков с сервера в формате JSON.
 
     """
     url = "https://api-seller.ozon.ru/v1/product/import/stocks"
@@ -114,8 +114,9 @@ def download_stock():
 
        Аргументы:
             нет
-       Возврат: list(dict):
-            возвращает список watch_remnants, где каждый элемент это словарь с данными об остатках для одного товара
+       Возврат:
+            list:
+            возвращает список, где каждый элемент это словарь с данными об остатках для одного товара
 
     """
     # Скачать остатки с сайта
@@ -141,10 +142,10 @@ def create_stocks(watch_remnants, offer_ids):
     """Создать остатки.
 
        Аргументы:
-            watch_remnants: остатки (часы) созданные функцией download_stock()
-            offer_ids: артикли из полученных товаров
-       Возврат: list(dict): создает список с вложенным словарем,
-       в котором указан код и его остаток
+            watch_remnants (list): остатки (часы) созданные функцией download_stock()
+            offer_ids (str): артикли из полученных товаров
+       Возврат:
+            list(dict): создает список с остатками
 
     """
     # Уберем то, что не загружено в seller
@@ -170,10 +171,10 @@ def create_prices(watch_remnants, offer_ids):
     """Создать цены.
 
        Аргументы:
-            watch_remnants: остатки (часы) созданные функцией download_stock()
-            offer_ids: артикли из полученных товаров
-       Возврат: list(dict): создает список с вложенным словарем,
-       в котором указаны значения цены определенного кода (его номера).
+            watch_remnants (list): остатки (часы) созданные функцией download_stock()
+            offer_ids (str): артикли из полученных товаров
+       Возврат:
+            list: создает список с ценами определенного кода (его номера).
 
     """
     prices = []
@@ -239,12 +240,12 @@ async def upload_prices(watch_remnants, client_id, seller_token):
     """Загрузить цены.
 
        Аргументы:
-            watch_remnants: остатки (часы) созданные функцией download_stock()
-            client_id: идентификатор клиента
-            seller_token: токен продавца
-       Возврат: list(dict):
-            возвращает список prices, в котором обновлен порядок по n частям,
-            для понимания какие именно цены были отправлены на платформу
+            watch_remnants (list): остатки (часы) созданные функцией download_stock()
+            client_id (str): идентификатор клиента
+            seller_token (str): токен продавца
+       Возврат:
+            list: возвращает список prices, в котором обновлен порядок по n частям,
+                для понимания какие именно цены были отправлены на платформу
 
     """
     offer_ids = get_offer_ids(client_id, seller_token)
@@ -258,12 +259,12 @@ async def upload_stocks(watch_remnants, client_id, seller_token):
     """Загрузить остатки.
 
        Аргументы:
-            watch_remnants: остатки (часы) созданные функцией download_stock()
-            client_id: идентификатор клиента
-            seller_token: токен продавца
+            watch_remnants (list): остатки (часы) созданные функцией download_stock()
+            client_id (str): идентификатор клиента
+            seller_token (str): токен продавца
        Возврат:
-            not_empty - список запасов с ненулевым значением
-            stocks - список с остатками зависящие от их количества
+            not_empty (list) - список запасов с ненулевым значением
+            stocks (list) - список с остатками зависящие от их количества
 
     """
     offer_ids = get_offer_ids(client_id, seller_token)

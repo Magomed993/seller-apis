@@ -14,11 +14,11 @@ def get_product_list(page, campaign_id, access_token):
     """Получить список товаров с магазина яндекс маркет.
 
        Аргументы:
-            page: страница
-            campaign_id: идентификатор компании
-            access_token: токен ключ
+            page (str): страница
+            campaign_id (str): идентификатор компании
+            access_token (str): токен ключ
        Возврат:
-            возвращает значение по ключу result из полученного JSON-объекта
+            list: список товаров по ключу "result" из JSON-ответа.
 
     """
     endpoint_url = "https://api.partner.market.yandex.ru/"
@@ -43,11 +43,11 @@ def update_stocks(stocks, campaign_id, access_token):
     """Обновить остатки.
 
        Аргументы:
-            stocks: остатки
-            campaign_id: идентификатор компании
-            access_token: токен доступа
+            stocks (list): остатки
+            campaign_id (str): идентификатор компании
+            access_token (str): токен доступа
        Возврат:
-            возвращает ответ с сервера в формате JSON с обновленными остатками
+            list: возвращает список обновленных остатков с сервера в формате JSON.
 
     """
     endpoint_url = "https://api.partner.market.yandex.ru/"
@@ -69,11 +69,11 @@ def update_price(prices, campaign_id, access_token):
     """Обновить цены товаров.
 
        Аргументы:
-            prices: цены
-            campaign_id: идентификатор компании
-            access_token: токен доступа
+            prices (list): цены
+            campaign_id (str): идентификатор компании
+            access_token (str): токен доступа
        Возврат:
-            возвращает ответ с сервера в формате JSON с обновленными ценами
+            list: возвращает ответ с сервера в формате JSON с обновленными ценами
 
     """
     endpoint_url = "https://api.partner.market.yandex.ru/"
@@ -95,8 +95,8 @@ def get_offer_ids(campaign_id, market_token):
     """Получить артикулы товаров Яндекс маркета.
 
        Аргументы:
-            campaign_id: идентификатор компании
-            market_token: токен доступа
+            campaign_id (str): идентификатор компании
+            market_token (str): токен доступа
        Возврат:
             list: список с артикулами
 
@@ -119,11 +119,11 @@ def create_stocks(watch_remnants, offer_ids, warehouse_id):
     """Создать остатки.
 
        Аргументы:
-            watch_remnants: остатки (часы) созданные функцией download_stock()
-            offer_ids: артикли из полученных товаров
-            warehouse_id: идентификатор склада
-       Возврат: list(dict): создает список с вложенным словарем,
-       в котором указан код и его остаток
+            watch_remnants (list): остатки (часы) созданные функцией download_stock()
+            offer_ids (str): артикли из полученных товаров
+            warehouse_id (str): идентификатор склада
+       Возврат:
+            list(dict): создает список с остатками
 
     """
     # Уберем то, что не загружено в market
@@ -174,10 +174,10 @@ def create_prices(watch_remnants, offer_ids):
     """Создать цены.
 
        Аргументы:
-            watch_remnants: остатки (часы) созданные функцией download_stock()
-            offer_ids: артикли из полученных товаров
-       Возврат: list(dict): создает список с вложенным словарем,
-       в котором указаны значения цены определенного кода (его номера).
+            watch_remnants (list): остатки (часы) созданные функцией download_stock()
+            offer_ids (str): артикли из полученных товаров
+       Возврат:
+            list: создает список с ценами определенного кода (его номера).
 
     """
     prices = []
@@ -203,12 +203,12 @@ async def upload_prices(watch_remnants, campaign_id, market_token):
     """Загрузить цены.
 
        Аргументы:
-            watch_remnants: остатки (часы) созданные функцией download_stock()
-            campaign_id: идентификатор компании
-            market_token: токен доступа
-       Возврат: list(dict):
-            возвращает список prices, в котором обновлен порядок по n частям,
-            для понимания какие именно цены были отправлены на платформу
+            watch_remnants (list): остатки (часы) созданные функцией download_stock()
+            campaign_id (str): идентификатор компании
+            market_token (str): токен доступа
+       Возврат:
+            list: возвращает список prices, в котором обновлен порядок по n частям,
+                для понимания какие именно цены были отправлены на платформу
 
     """
     offer_ids = get_offer_ids(campaign_id, market_token)
@@ -222,13 +222,13 @@ async def upload_stocks(watch_remnants, campaign_id, market_token, warehouse_id)
     """Загрузить остатки.
 
        Аргументы:
-            watch_remnants: остатки (часы) созданные функцией download_stock()
-            campaign_id: идентификатор компании
-            market_token: токен доступа
-            warehouse_id: идентификатор склада
-       Возврат 2-ух результатов:
-            not_empty - список запасов с ненулевым значением
-            stocks - список с остатками зависящие от их количества
+            watch_remnants (list): остатки (часы) созданные функцией download_stock()
+            campaign_id (str): идентификатор компании
+            market_token (str): токен доступа
+            warehouse_id (str): идентификатор склада
+       Возврат:
+            not_empty (list) - список запасов с ненулевым значением
+            stocks (list) - список с остатками зависящие от их количества
 
     """
     offer_ids = get_offer_ids(campaign_id, market_token)
