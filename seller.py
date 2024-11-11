@@ -19,19 +19,7 @@ def get_product_list(last_id, client_id, seller_token):
             client_id: идентификатор клиента
             seller_token: токен продавца
        Возврат:
-            json: словарь с результатом
-       Пример корректного исполнения функции:
-            >>last_id = (последний id)
-            >>client_id = (id клиента)
-            >>seller_token = (токен продавца)
-            >>get_product_list(last_id, client_id, seller_token)
-            {
-                словарь: значение
-            }
-       Пример некорректного исполнения функции:
-            >>client_id = (id клиента)
-            >>get_product_list(last_id, client_id, seller_token)
-            Error
+            возвращает значение по ключу result из полученного JSON-объекта
 
     """
     url = "https://api-seller.ozon.ru/v2/product/list"
@@ -60,15 +48,6 @@ def get_offer_ids(client_id, seller_token):
             seller_token: токен продавца
        Возврат:
             list: список с артикулами
-       Пример корректного исполнения функции:
-            >>client_id = (id клиента)
-            >>seller_token = (токен продавца)
-            >>get_offer_ids(client_id, seller_token)
-            [список id]
-       Пример некорректного исполнения функции:
-            >>client_id = (id клиента)
-            >>get_offer_ids(client_id, seller_token)
-            Error
 
     """
     last_id = ""
@@ -94,19 +73,7 @@ def update_price(prices: list, client_id, seller_token):
             client_id: идентификатор клиента
             seller_token: токен продавца
        Возврат:
-            {
-                джинсы: новая цена,
-            }
-       Пример корректного исполнения функции:
-            >>prices = [list]
-            >>client_id = id клиента
-            >>seller_token = токен продавца
-            >>update_price(prices, client_id, seller_token)
-            {джинсы: новая цена,}
-       Пример некорректного исполнения функции:
-            >>client_id = (id клиента)
-            >>update_price(prices, client_id, seller_token)
-            Error
+            возвращает ответ с сервера в формате JSON с обновленными ценами
 
     """
     url = "https://api-seller.ozon.ru/v1/product/import/prices"
@@ -128,20 +95,8 @@ def update_stocks(stocks: list, client_id, seller_token):
             client_id: идентификатор клиента
             seller_token: токен продавца
        Возврат:
-            {
-                джинсы: новый остаток,
-            }
-       Пример корректного исполнения функции:
-            >>stocks = [list]
-            >>client_id = (id клиента)
-            >>seller_token = (токен продавца)
-            >>update_stocks(stocks, client_id, seller_token)
-            {джинсы: новый остаток,}
-       Пример некорректного исполнения функции:
-            >>stocks = [list]
-            >>client_id = (id клиента)
-            >>update_stocks(stocks, client_id, seller_token)
-            Error
+            возвращает ответ с сервера в формате JSON с обновленными остатками
+
     """
     url = "https://api-seller.ozon.ru/v1/product/import/stocks"
     headers = {
@@ -160,23 +115,8 @@ def download_stock():
        Аргументы:
             нет
        Возврат: list(dict):
-            [{
-                код: значение,
-                наименование товара: значение,
-                изображение: значение,
-                цена: значение,
-                количество: значение
-            }]
-       Пример корректного исполнения функции:
-            >>download_stock()
-            [{код: значение,
-            наименование товара: значение,
-            изображение: значение,
-            цена: значение,
-            количество: значение}]
-       Пример некорректного исполнения функции:
-            >>download_stock(1, 2)
-            Error
+            возвращает список watch_remnants, где каждый элемент это словарь с данными об остатках для одного товара
+
     """
     # Скачать остатки с сайта
     casio_url = "https://timeworld.ru/upload/files/ostatki.zip"
@@ -205,16 +145,7 @@ def create_stocks(watch_remnants, offer_ids):
             offer_ids: артикли из полученных товаров
        Возврат: list(dict): создает список с вложенным словарем,
        в котором указан код и его остаток
-       Пример корректного исполнения функции:
-            >>watch_remnants = download_stock()
-            >>offer_ids = get_offer_ids(...)
-            >>create_stocks(watch_remnants, offer_ids)
-            [{offer_id: код, stock: остаток}]
-       Пример некорректного исполнения функции:
-            >>watch_remnants = download_stock(1, 2)
-            >>offer_ids = get_offer_ids(...)
-            >>create_stocks(watch_remnants, offer_ids)
-            Error
+
     """
     # Уберем то, что не загружено в seller
     stocks = []
@@ -243,21 +174,7 @@ def create_prices(watch_remnants, offer_ids):
             offer_ids: артикли из полученных товаров
        Возврат: list(dict): создает список с вложенным словарем,
        в котором указаны значения цены определенного кода (его номера).
-       Пример корректного исполнения функции:
-            >>watch_remnants = download_stock()
-            >>offer_ids = get_offer_ids(...)
-            >>create_prices(watch_remnants, offer_ids)
-            [{  "auto_action_enabled": "UNKNOWN",
-                "currency_code": "RUB",
-                "offer_id": Код,
-                "old_price": "0",
-                "price": Цена
-            },]
-       Пример некорректного исполнения функции:
-            >>watch_remnants = download_stock(1, 2)
-            >>offer_ids = get_offer_ids(...)
-            >>create_prices(watch_remnants, offer_ids)
-            Error
+
     """
     prices = []
     for watch in watch_remnants:
@@ -325,24 +242,9 @@ async def upload_prices(watch_remnants, client_id, seller_token):
             watch_remnants: остатки (часы) созданные функцией download_stock()
             client_id: идентификатор клиента
             seller_token: токен продавца
-       Возврат: list(dict): создает список с вложенным словарем,
-       в котором указаны значения по схожести offer_ids и кодом - подробное описание.
-       Пример корректного исполнения функции:
-            >>watch_remnants = download_stock()
-            >>client_id = (id клиента)
-            >>seller_token = (токен продавца)
-            >>upload_prices(watch_remnants, client_id, seller_token)
-            [{  "auto_action_enabled": "UNKNOWN",
-                "currency_code": "RUB",
-                "offer_id": Код,
-                "old_price": "0",
-                "price": Цена
-            },]
-       Пример некорректного исполнения функции:
-            >>watch_remnants = download_stock()
-            >>client_id = (id клиента)
-            >>upload_prices(watch_remnants, seller_token)
-            Error
+       Возврат: list(dict):
+            возвращает список prices, в котором обновлен порядок по n частям,
+            для понимания какие именно цены были отправлены на платформу
 
     """
     offer_ids = get_offer_ids(client_id, seller_token)
@@ -359,21 +261,9 @@ async def upload_stocks(watch_remnants, client_id, seller_token):
             watch_remnants: остатки (часы) созданные функцией download_stock()
             client_id: идентификатор клиента
             seller_token: токен продавца
-       Возврат 2-ух результатов:
+       Возврат:
             not_empty - список запасов с ненулевым значением
             stocks - список с остатками зависящие от их количества
-       Пример корректного исполнения функции:
-            >>watch_remnants = download_stock()
-            >>client_id = (id клиента)
-            >>seller_token = (токен продавца)
-            >>upload_stocks(watch_remnants, client_id, seller_token)
-            [список не равный нулю]
-            [список с остатками]
-       Пример некорректного исполнения функции:
-            >>watch_remnants = download_stock()
-            >>client_id = (id клиента)
-            >>upload_stocks(watch_remnants, seller_token)
-            Error
 
     """
     offer_ids = get_offer_ids(client_id, seller_token)

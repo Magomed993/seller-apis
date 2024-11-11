@@ -18,20 +18,7 @@ def get_product_list(page, campaign_id, access_token):
             campaign_id: идентификатор компании
             access_token: токен ключ
        Возврат:
-            json: словарь товара с магазина
-       Пример корректного исполнения функции:
-            >>page= (страница)
-            >>campaign_id = (id компании)
-            >>access_token = (токен доступа)
-            >>get_product_list(page, campaign_id, access_token)
-            {
-                джинсы: значение
-            }
-       Пример некорректного исполнения функции:
-            >>campaign_id = (id компании)
-            >>access_token = (токен доступа)
-            >>get_product_list(page, campaign_id, access_token)
-            Error
+            возвращает значение по ключу result из полученного JSON-объекта
 
     """
     endpoint_url = "https://api.partner.market.yandex.ru/"
@@ -60,20 +47,8 @@ def update_stocks(stocks, campaign_id, access_token):
             campaign_id: идентификатор компании
             access_token: токен доступа
        Возврат:
-            {
-                джинсы: новый остаток,
-            }
-       Пример корректного исполнения функции:
-            >>stocks = остатки
-            >>campaign_id = id компании
-            >>access_token = токен доступа
-            >>update_stocks(stocks, campaign_id, access_token)
-            {джинсы: новый остаток,}
-       Пример некорректного исполнения функции:
-            >>campaign_id = id компании
-            >>access_token = токен доступа
-            >>update_stocks(stocks, campaign_id, access_token)
-            Error
+            возвращает ответ с сервера в формате JSON с обновленными остатками
+
     """
     endpoint_url = "https://api.partner.market.yandex.ru/"
     headers = {
@@ -98,19 +73,7 @@ def update_price(prices, campaign_id, access_token):
             campaign_id: идентификатор компании
             access_token: токен доступа
        Возврат:
-            {
-                джинсы: новая цена,
-            }
-       Пример корректного исполнения функции:
-            >>prices = [цены]
-            >>campaign_id = id компании
-            >>access_token = токен доступа
-            >>update_price(prices, campaign_id, access_token)
-            {джинсы: новая цена,}
-       Пример некорректного исполнения функции:
-            >>access_token = токен доступа
-            >>update_price(prices, campaign_id, access_token)
-            Error
+            возвращает ответ с сервера в формате JSON с обновленными ценами
 
     """
     endpoint_url = "https://api.partner.market.yandex.ru/"
@@ -136,15 +99,7 @@ def get_offer_ids(campaign_id, market_token):
             market_token: токен доступа
        Возврат:
             list: список с артикулами
-       Пример корректного исполнения функции:
-            >>campaign_id = (id компании)
-            >>market_token = (токен доступа)
-            >>get_offer_ids(campaign_id, market_token)
-            [список id]
-       Пример некорректного исполнения функции:
-            >>campaign_id = (id компании)
-            >>get_offer_ids(campaign_id, market_token)
-            Error
+
     """
     page = ""
     product_list = []
@@ -169,17 +124,7 @@ def create_stocks(watch_remnants, offer_ids, warehouse_id):
             warehouse_id: идентификатор склада
        Возврат: list(dict): создает список с вложенным словарем,
        в котором указан код и его остаток
-       Пример корректного исполнения функции:
-            >>watch_remnants = download_stock()
-            >>offer_ids = get_offer_ids(...)
-            >>warehouse_id = id склада
-            >>create_stocks(watch_remnants, offer_ids, warehouse_id)
-            [{остатки, количество которых зависит от количества остатков}]
-       Пример некорректного исполнения функции:
-            >>watch_remnants = download_stock(1, 2)
-            >>offer_ids = get_offer_ids(...)
-            >>create_stocks(watch_remnants, offer_ids, warehouse_id)
-            Error
+
     """
     # Уберем то, что не загружено в market
     stocks = list()
@@ -233,21 +178,7 @@ def create_prices(watch_remnants, offer_ids):
             offer_ids: артикли из полученных товаров
        Возврат: list(dict): создает список с вложенным словарем,
        в котором указаны значения цены определенного кода (его номера).
-       Пример корректного исполнения функции:
-            >>watch_remnants = download_stock()
-            >>offer_ids = get_offer_ids(...)
-            >>create_prices(watch_remnants, offer_ids)
-            [{  "id": номер кода,
-                "price": {
-                    value: цена,
-                    currenceId: RUR
-                }
-            },]
-       Пример некорректного исполнения функции:
-            >>watch_remnants = download_stock(1, 2)
-            >>offer_ids = get_offer_ids(...)
-            >>create_prices(watch_remnants, offer_ids)
-            Error
+
     """
     prices = []
     for watch in watch_remnants:
@@ -275,19 +206,9 @@ async def upload_prices(watch_remnants, campaign_id, market_token):
             watch_remnants: остатки (часы) созданные функцией download_stock()
             campaign_id: идентификатор компании
             market_token: токен доступа
-       Возврат: list(dict): перераспределенные цены.
-       Пример корректного исполнения функции:
-            >>watch_remnants = download_stock()
-            >>campaign_id = (id компании)
-            >>market_token = (токен доступа)
-            >>upload_prices(watch_remnants, campaign_id, market_token)
-            [{  price: цены
-            },]
-       Пример некорректного исполнения функции:
-            >>watch_remnants = download_stock()
-            >>campaign_id = (id компании)
-            >>upload_prices(watch_remnants, campaign_id, market_token)
-            Error
+       Возврат: list(dict):
+            возвращает список prices, в котором обновлен порядок по n частям,
+            для понимания какие именно цены были отправлены на платформу
 
     """
     offer_ids = get_offer_ids(campaign_id, market_token)
@@ -308,18 +229,6 @@ async def upload_stocks(watch_remnants, campaign_id, market_token, warehouse_id)
        Возврат 2-ух результатов:
             not_empty - список запасов с ненулевым значением
             stocks - список с остатками зависящие от их количества
-       Пример корректного исполнения функции:
-            >>watch_remnants = download_stock()
-            >>campaign_id = (id компании)
-            >>market_token = (токен доступа)
-            >>upload_stocks(watch_remnants, campaign_id, market_token, warehouse_id)
-            [список не равный нулю]
-            [список с остатками]
-       Пример некорректного исполнения функции:
-            >>watch_remnants = download_stock()
-            >>campaign_id = (id компании)
-            >>upload_stocks(watch_remnants, campaign_id, market_token, warehouse_id)
-            Error
 
     """
     offer_ids = get_offer_ids(campaign_id, market_token)
